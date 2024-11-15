@@ -4,6 +4,16 @@ This boot rom can boot an Xbox BIOS. It contains absolutely no code copyrighted
 by Microsoft, so you are free to distribute it. See LICENSE.txt for more
 information.
 
+This fork includes branches of modified versions of the bootrom, as a sort of
+educational exercise.
+
+Here are the following branches:
+
+1. red_led_on_failed_verification - Solid red LED via I2C if TEA/ARC4 verification fails. This one was tested on a modified build of XEMU with support for displaying SMC LED statuses.
+
+NOTE: These branches have only been tested on XEMU. There's a pretty good chance they do not
+work on real hardware.
+
 ## What does it do?
 
 This boot ROM accomplishes the following:
