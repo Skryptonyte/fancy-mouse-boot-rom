@@ -43,6 +43,9 @@ text_start:
 #define JMP_REG32 ebx
 #define JMP_REG8 bl
 
+# I2C Base
+#define I2C_BASE 0xc000
+
 # Result = *(OP1 & 0x0FFFFFFF)
 # I could forego doing the binary AND and save a few bytes, but it wouldn't functionally be the same
 read_memory:
@@ -425,9 +428,43 @@ arcfour_sanity_check:
 
 # We died!
 error_handler_start:
+
+    mov bl, 0x8
+    mov cl, 0xf0
+    call i2c_transmit
+
+    mov bl, 0x7
+    mov cl, 0x01
+
+    call i2c_transmit
+
     mov eax, 0x80000880
     mov dx, 0xCF8
     jmp error_handler_finish
+
+# Derived from https://github.com/XboxDev/cromwell/blob/master/boot_rom/2bPicResponseAction.c
+i2c_transmit:
+    mov dx, I2C_BASE+4
+    mov al, 0x20
+    outb dx, al
+
+    add dx, 4
+    mov al, bl
+    outb dx, al
+
+    sub dx, 2
+    mov al, cl
+    outb dx, al
+
+    sub dx, 6
+    mov ax, 0xffff
+    outw dx, ax
+
+    add dx, 2
+    mov al, 0x1a
+    outb dx, al
+
+    ret
 
 # This is the hash we expect (verifies it's correct)
 tea_hash:
